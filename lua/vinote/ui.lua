@@ -3,6 +3,7 @@ local M = {}
 
 local state = require 'vinote.state'
 local files = require 'vinote.files'
+local notify = require 'vinote.notify'
 local api = vim.api
 local fn = vim.fn
 
@@ -31,12 +32,6 @@ local function calc_dimensions()
     list_height = list_height,
     preview_height = height - list_height - 1,
   }
-end
-
-local function notify(...)
-  if pcall(require, 'snacks') then
-    return vim.F.npcall(require('snacks').notify, ...)
-  end
 end
 
 local function create_float(buf, opts)
@@ -133,7 +128,7 @@ local function setup_preview_keymaps()
   map(buf, 'w', function()
     M.save_preview()
     vim.bo[buf].modified = false
-    notify('Saved', { level = 'info' })
+    notify.notify('Saved', 'info')
   end)
 
   map(buf, 'q', M.close)
@@ -199,12 +194,12 @@ local function setup_list_keymaps()
       if name and name ~= '' then
         local ok, err = files.create(name)
         if ok then
-          notify('Created: ' .. name, { level = 'info' })
+          notify.notify('Created: ' .. name, 'info')
           s.selected_index = 1
           M.refresh_list()
           M.refresh_preview()
         else
-          notify(err or 'Failed', { level = 'error' })
+          notify.notify(err or 'Failed', 'error')
         end
       end
     end)
@@ -217,12 +212,12 @@ local function setup_list_keymaps()
         if confirm == 'y' then
           local ok, err = files.delete(name)
           if ok then
-            notify('Deleted', { level = 'info' })
+            notify.notify('Deleted', { level = 'info' })
             s.selected_index = math.max(1, s.selected_index - 1)
             M.refresh_list()
             M.refresh_preview()
           else
-            notify(err or 'Failed', { level = 'error' })
+            notify.notify(err or 'Failed', { level = 'error' })
           end
         end
       end)
@@ -236,11 +231,11 @@ local function setup_list_keymaps()
         if new and new ~= '' and new ~= old then
           local ok, err = files.rename(old, new)
           if ok then
-            notify('Renamed', { level = 'info' })
+            notify.notify('Renamed', 'info')
             M.refresh_list()
             M.refresh_preview()
           else
-            notify(err or 'Failed', { level = 'error' })
+            notify.notify(err or 'Failed', 'error')
           end
         end
       end)
