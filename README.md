@@ -1,7 +1,16 @@
 # Vinote
+
 <img alt="vinote" src="https://github.com/user-attachments/assets/03e86b33-5292-47fa-9fb5-3c3f2d26351b" />
 
 A floating window note-taking plugin for Neovim.
+
+## Features
+
+- Floating UI with file list and preview panes
+- Notes sorted by modification time (most recent first)
+- Auto-saves on close
+- Auto-adds `.md` extension if not specified
+- Optional [snacks.nvim](https://github.com/folke/snacks.nvim) integration for notifications
 
 ## Installation
 
@@ -9,7 +18,7 @@ A floating window note-taking plugin for Neovim.
 
 ```lua
 {
-  name = 'vinote',
+  'senelway/vinote.nvim',
   event = 'VeryLazy',
   opts = {
     notes_dir = vim.fn.stdpath 'config' .. '/vinote',
@@ -21,16 +30,18 @@ A floating window note-taking plugin for Neovim.
       width = 0.6,
       height = 0.7,
       list_height = 0.3,
+      show_footer_keys = true,
     },
-  }
+  },
 }
 ```
 
 ## Options
 
 ### `notes_dir`
+
 - **Type:** `string`
-- **Default:** `~/.config/nvim/vinote`
+- **Default:** `vim.fn.stdpath('config') .. '/vinote'`
 - **Description:** Directory where notes are stored.
 
 ### `keys`
@@ -47,6 +58,7 @@ A floating window note-taking plugin for Neovim.
 | `width` | `number` | `0.6` | Window width as ratio of screen (0-1) |
 | `height` | `number` | `0.7` | Window height as ratio of screen (0-1) |
 | `list_height` | `number` | `0.3` | File list pane height as ratio of window (0-1) |
+| `show_footer_keys` | `boolean` | `true` | Show keybinding hints in window footer |
 
 ## Keybindings
 
@@ -66,15 +78,25 @@ A floating window note-taking plugin for Neovim.
 | `n` | Create new note |
 | `d` | Delete note (with confirmation) |
 | `r` | Rename note |
-| `<Tab>` | Switch focus to preview |
+| `<Tab>` / `<C-j>` | Switch focus to preview |
 | `q` / `<Esc>` | Close vinote |
 
 ### In Preview
 
 | Key | Action |
 |-----|--------|
-| `j` / `k` | Scroll content |
-| `<Tab>` | Switch focus to file list |
+| `<Tab>` / `<C-k>` | Switch focus to file list |
+| `w` | Save changes |
 | `q` / `<Esc>` | Close vinote |
-| `:w` | Save changes (preview is editable) |
+
+## API
+
+```lua
+local vinote = require('vinote')
+
+vinote.toggle()    -- Toggle the UI
+vinote.open()      -- Open the UI
+vinote.close()     -- Close the UI
+vinote.new_note()  -- Create a new note (prompts for name)
+```
 
