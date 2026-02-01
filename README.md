@@ -1,4 +1,5 @@
 # Vinote
+<img alt="vinote" src="https://github.com/user-attachments/assets/03e86b33-5292-47fa-9fb5-3c3f2d26351b" />
 
 A floating window note-taking plugin for Neovim.
 
