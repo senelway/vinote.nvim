@@ -14,10 +14,10 @@ function M.new_note()
     if name and name ~= '' then
       local ok, err = files.create(name)
       if ok then
-        notify.notify('Created: ' .. name, 'info')
+        notify.info('Created: ' .. name)
         ui.open()
       else
-        notify.notify(err or 'Failed', 'error')
+        notify.error(err or 'Failed')
       end
     end
   end)

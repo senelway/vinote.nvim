@@ -128,7 +128,7 @@ local function setup_preview_keymaps()
   map(buf, 'w', function()
     M.save_preview()
     vim.bo[buf].modified = false
-    notify.notify('Saved', 'info')
+    notify.info 'Saved'
   end)
 
   map(buf, 'q', M.close)
@@ -194,12 +194,12 @@ local function setup_list_keymaps()
       if name and name ~= '' then
         local ok, err = files.create(name)
         if ok then
-          notify.notify('Created: ' .. name, 'info')
+          notify.info('Created: ' .. name)
           s.selected_index = 1
           M.refresh_list()
           M.refresh_preview()
         else
-          notify.notify(err or 'Failed', 'error')
+          notify.error(err or 'Failed')
         end
       end
     end)
@@ -212,12 +212,12 @@ local function setup_list_keymaps()
         if confirm == 'y' then
           local ok, err = files.delete(name)
           if ok then
-            notify.notify('Deleted', { level = 'info' })
+            notify.info 'Deleted'
             s.selected_index = math.max(1, s.selected_index - 1)
             M.refresh_list()
             M.refresh_preview()
           else
-            notify.notify(err or 'Failed', { level = 'error' })
+            notify.error(err or 'Failed')
           end
         end
       end)
@@ -231,11 +231,11 @@ local function setup_list_keymaps()
         if new and new ~= '' and new ~= old then
           local ok, err = files.rename(old, new)
           if ok then
-            notify.notify('Renamed', 'info')
+            notify.info 'Renamed'
             M.refresh_list()
             M.refresh_preview()
           else
-            notify.notify(err or 'Failed', 'error')
+            notify.error(err or 'Failed')
           end
         end
       end)
