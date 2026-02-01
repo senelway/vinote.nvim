@@ -10,7 +10,7 @@ local snacks_ok, snacks = pcall(require, 'snacks')
 ---@param opts? table
 local function run(msg, level, opts)
   if snacks_ok then
-    return snacks.notify(msg, level, opts)
+    return snacks.notify(msg, vim.tbl_extend('force', { level = level }, opts or {}))
   end
   vim.notify(msg, level and vim.log.levels[level:upper()], opts)
 end
