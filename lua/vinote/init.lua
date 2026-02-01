@@ -3,6 +3,7 @@ local M = {}
 
 local ui = require 'vinote.ui'
 local files = require 'vinote.files'
+local notify = require 'vinote.notify'
 
 M.toggle = ui.toggle
 M.open = ui.open
@@ -13,10 +14,10 @@ function M.new_note()
     if name and name ~= '' then
       local ok, err = files.create(name)
       if ok then
-        Snacks.notify('Created: ' .. name, { level = 'info' })
+        notify.info('Created: ' .. name)
         ui.open()
       else
-        Snacks.notify(err or 'Failed', { level = 'error' })
+        notify.error(err or 'Failed')
       end
     end
   end)
