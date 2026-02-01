@@ -22,10 +22,7 @@ A floating window note-taking plugin for Neovim.
       height = 0.7,
       list_height = 0.3,
     },
-  },
-  config = function(_, opts)
-    require('vinote').setup(opts)
-  end,
+  }
 }
 ```
 
