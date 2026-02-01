@@ -105,20 +105,6 @@ describe('vinote.files', function()
     end)
   end)
 
-  describe('read', function()
-    it('should read file contents', function()
-      files.create 'readable'
-      local lines = files.read 'readable.md'
-      assert.is_not_nil(lines)
-      assert.equals('# readable', lines[1])
-    end)
-
-    it('should return nil for nonexistent file', function()
-      local lines = files.read 'nonexistent.md'
-      assert.is_nil(lines)
-    end)
-  end)
-
   describe('get_path', function()
     it('should return full path', function()
       local path = files.get_path 'test.md'

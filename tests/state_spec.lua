@@ -21,10 +21,6 @@ describe('vinote.state', function()
     it('should have selected_index of 1', function()
       assert.equals(1, state.state.selected_index)
     end)
-
-    it('should have focus on list', function()
-      assert.equals('list', state.state.focus)
-    end)
   end)
 
   describe('reset', function()
@@ -33,7 +29,6 @@ describe('vinote.state', function()
       state.state.list_buf = 456
       state.state.files = { 'a', 'b', 'c' }
       state.state.selected_index = 5
-      state.state.focus = 'preview'
 
       state.reset()
 
@@ -41,7 +36,6 @@ describe('vinote.state', function()
       assert.is_nil(state.state.list_buf)
       assert.equals(0, #state.state.files)
       assert.equals(1, state.state.selected_index)
-      assert.equals('list', state.state.focus)
     end)
   end)
 
