@@ -9,6 +9,7 @@ local default_state = {
   files = {},
   selected_index = 1,
   current_file = nil,
+  layout = nil,
 }
 
 M.state = vim.deepcopy(default_state)
