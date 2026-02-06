@@ -10,7 +10,9 @@ local fn = vim.fn
 local config = {
   width = 0.6,
   height = 0.7,
+  layout = 'vertical',
   list_height = 0.3,
+  list_width = 0.3,
   show_footer_keys = true,
 }
 
@@ -21,16 +23,23 @@ function M.set_config(opts)
 end
 
 local function calc_dimensions()
-  local width = math.floor(vim.o.columns * config.width)
-  local height = math.floor(vim.o.lines * config.height)
-  local list_height = math.floor(height * config.list_height)
+  local total_w = math.floor(vim.o.columns * config.width)
+  local total_h = math.floor(vim.o.lines * config.height)
+  local row = math.floor((vim.o.lines - total_h) / 2)
+  local col = math.floor((vim.o.columns - total_w) / 2)
+
+  if config.layout == 'horizontal' then
+    local list_w = math.floor(total_w * config.list_width)
+    return {
+      list = { width = list_w, height = total_h, row = row, col = col },
+      preview = { width = total_w - list_w - 2, height = total_h, row = row, col = col + list_w + 2 },
+    }
+  end
+
+  local list_h = math.floor(total_h * config.list_height)
   return {
-    width = width,
-    height = height,
-    row = math.floor((vim.o.lines - height) / 2),
-    col = math.floor((vim.o.columns - width) / 2),
-    list_height = list_height,
-    preview_height = height - list_height - 1,
+    list = { width = total_w, height = list_h, row = row, col = col },
+    preview = { width = total_w, height = total_h - list_h - 2, row = row + list_h + 2, col = col },
   }
 end
 
@@ -123,7 +132,8 @@ local function setup_preview_keymaps()
   end
 
   map(buf, '<Tab>', go_to_list)
-  map(buf, '<C-k>', go_to_list)
+  local preview_nav_key = config.layout == 'horizontal' and '<C-h>' or '<C-k>'
+  map(buf, preview_nav_key, go_to_list)
 
   map(buf, 'w', function()
     M.save_preview()
@@ -249,7 +259,8 @@ local function setup_list_keymaps()
   end
 
   map(buf, '<Tab>', go_to_preview)
-  map(buf, '<C-j>', go_to_preview)
+  local list_nav_key = config.layout == 'horizontal' and '<C-l>' or '<C-j>'
+  map(buf, list_nav_key, go_to_preview)
 
   map(buf, 'q', M.close)
   map(buf, '<Esc>', M.close)
@@ -263,28 +274,24 @@ function M.open()
 
   local dims = calc_dimensions()
   local s = state.state
+  local horiz = config.layout == 'horizontal'
+
+  local list_nav = horiz and '⇥/C-l:preview' or '⇥/C-j:preview'
+  local preview_nav = horiz and '⇥/C-h:list' or '⇥/C-k:list'
 
   s.list_buf = api.nvim_create_buf(false, true)
-  s.list_win = create_float(s.list_buf, {
-    width = dims.width,
-    height = dims.list_height,
-    row = dims.row,
-    col = dims.col,
+  s.list_win = create_float(s.list_buf, vim.tbl_extend('force', dims.list, {
     title = ' Vinote ',
     enter = true,
     minimal = true,
-    footer = ' n:new  d:del  r:rename  ⏎:open  ⇥/C-j:preview  q:close ',
-  })
+    footer = ' n:new  d:del  r:rename  ⏎:open  ' .. list_nav .. '  q:close ',
+  }))
 
   s.preview_buf = api.nvim_create_buf(false, true)
-  s.preview_win = create_float(s.preview_buf, {
-    width = dims.width,
-    height = dims.preview_height,
-    row = dims.row + dims.list_height + 2,
-    col = dims.col,
+  s.preview_win = create_float(s.preview_buf, vim.tbl_extend('force', dims.preview, {
     title = ' Preview ',
-    footer = ' w:save  ⇥/C-k:list  q:close ',
-  })
+    footer = ' w:save  ' .. preview_nav .. '  q:close ',
+  }))
 
   -- Preview window options
   local wo = { number = true, relativenumber = false, wrap = true, linebreak = true }

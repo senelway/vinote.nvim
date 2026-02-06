@@ -29,7 +29,9 @@ A floating window note-taking plugin for Neovim.
     window = {
       width = 0.6,
       height = 0.7,
+      layout = 'vertical',
       list_height = 0.3,
+      list_width = 0.3,
       show_footer_keys = true,
     },
   },
@@ -57,7 +59,9 @@ A floating window note-taking plugin for Neovim.
 |-----|------|---------|-------------|
 | `width` | `number` | `0.6` | Window width as ratio of screen (0-1) |
 | `height` | `number` | `0.7` | Window height as ratio of screen (0-1) |
-| `list_height` | `number` | `0.3` | File list pane height as ratio of window (0-1) |
+| `layout` | `string` | `'vertical'` | Pane layout: `'vertical'` (list top, preview bottom) or `'horizontal'` (list left, preview right) |
+| `list_height` | `number` | `0.3` | File list pane height as ratio of window, used in vertical layout (0-1) |
+| `list_width` | `number` | `0.3` | File list pane width as ratio of window, used in horizontal layout (0-1) |
 | `show_footer_keys` | `boolean` | `true` | Show keybinding hints in window footer |
 
 ## Keybindings
@@ -78,14 +82,14 @@ A floating window note-taking plugin for Neovim.
 | `n` | Create new note |
 | `d` | Delete note (with confirmation) |
 | `r` | Rename note |
-| `<Tab>` / `<C-j>` | Switch focus to preview |
+| `<Tab>` / `<C-j>` (vertical) / `<C-l>` (horizontal) | Switch focus to preview |
 | `q` / `<Esc>` | Close vinote |
 
 ### In Preview
 
 | Key | Action |
 |-----|--------|
-| `<Tab>` / `<C-k>` | Switch focus to file list |
+| `<Tab>` / `<C-k>` (vertical) / `<C-h>` (horizontal) | Switch focus to file list |
 | `w` | Save changes |
 | `q` / `<Esc>` | Close vinote |
 
